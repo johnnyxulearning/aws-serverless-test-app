@@ -11,14 +11,27 @@ authorName: 'Serverless, inc.'
 authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
 -->
 
-# Serverless Framework Node Express API on AWS
+# Serverless User Management HTTP API on AWS
 
-This template demonstrates how to develop and deploy a simple Node Express API service, backed by DynamoDB database, running on AWS Lambda using the traditional Serverless Framework.
+This is the user management HTTP APIs that includes below functions:
 
+1. Register a user with name and email
+2. Get user by email
 
-## Anatomy of the template
+### Source code folder directory layout
 
-This template configures a single function, `api`, which is responsible for handling all incoming requests thanks to the `httpApi` event. To learn more about `httpApi` event configuration options, please refer to [httpApi event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/). As the event is configured in a way to accept all incoming requests, `express` framework is responsible for routing and handling requests internally. Implementation takes advantage of `serverless-http` package, which allows you to wrap existing `express` applications. To learn more about `serverless-http`, please refer to corresponding [GitHub repository](https://github.com/dougmoscrop/serverless-http). Additionally, it also handles provisioning of a DynamoDB database that is used for storing data about users. The `express` application exposes two endpoints, `POST /users` and `GET /user/{userId}`, which allow to create and retrieve users.
+    .
+    ├── ...
+    ├── src                              # main source code folder
+    │   ├── customErrors                 # stores custome error class
+    │   │   ├── apiError.ts              # API error class file
+    │   ├── lambdas                      # Lambda functions folder
+    │   │   ├── userMgmtFunc.ts          # User management APIs
+    │   ├── schemas                      # Schemas folder
+    │   │   ├── Interfaces.ts            # Interface definition file
+    │   └── utils                        # Utility folder
+    │       └── errorHandler.ts          # Helper function file for error handling
+    └── ...
 
 ## Usage
 
@@ -122,8 +135,8 @@ with the following:
 ```javascript
 const dynamoDbClientParams = {};
 if (process.env.IS_OFFLINE) {
-  dynamoDbClientParams.region = 'localhost'
-  dynamoDbClientParams.endpoint = 'http://localhost:8000'
+  dynamoDbClientParams.region = "localhost";
+  dynamoDbClientParams.endpoint = "http://localhost:8000";
 }
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient(dynamoDbClientParams);
 ```
@@ -135,5 +148,6 @@ serverless offline start
 ```
 
 To learn more about the capabilities of `serverless-offline` and `serverless-dynamodb-local`, please refer to their corresponding GitHub repositories:
+
 - https://github.com/dherault/serverless-offline
 - https://github.com/99x/serverless-dynamodb-local

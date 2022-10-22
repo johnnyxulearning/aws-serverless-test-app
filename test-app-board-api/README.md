@@ -1,24 +1,39 @@
 <!--
 title: 'Serverless Framework Node Express API service backed by DynamoDB on AWS'
-description: 'This template demonstrates how to develop and deploy a simple Node Express API service backed by DynamoDB running on AWS Lambda using the traditional Serverless Framework.'
+description: 'This project is an API service backed by DynamoDB running on AWS Lambda using the traditional Serverless Framework.'
 layout: Doc
 framework: v3
 platform: AWS
 language: nodeJS
 priority: 1
-authorLink: 'https://github.com/serverless'
-authorName: 'Serverless, inc.'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
+authorLink: 'https://github.com/johnnyxulearning/'
+authorName: 'Johnny Xu'
 -->
 
-# Serverless Framework Node Express API on AWS
+# Serverless Board and Topic Subscription HTTP API on AWS
 
-This template demonstrates how to develop and deploy a simple Node Express API service, backed by DynamoDB database, running on AWS Lambda using the traditional Serverless Framework.
+This is the Board HTTP APIs that includes below functions:
 
+1. List message boards
+2. create a new message board
+3. Post a message to a board
+4. Subscribe to new message topic
 
-## Anatomy of the template
+### Source code folder directory layout
 
-This template configures a single function, `api`, which is responsible for handling all incoming requests thanks to the `httpApi` event. To learn more about `httpApi` event configuration options, please refer to [httpApi event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/). As the event is configured in a way to accept all incoming requests, `express` framework is responsible for routing and handling requests internally. Implementation takes advantage of `serverless-http` package, which allows you to wrap existing `express` applications. To learn more about `serverless-http`, please refer to corresponding [GitHub repository](https://github.com/dougmoscrop/serverless-http). Additionally, it also handles provisioning of a DynamoDB database that is used for storing data about users. The `express` application exposes two endpoints, `POST /users` and `GET /user/{userId}`, which allow to create and retrieve users.
+    .
+    ├── ...
+    ├── src                              # main source code folder
+    │   ├── customErrors                 # stores custome error class
+    │   │   ├── apiError.ts              # API error class file
+    │   ├── lambdas                      # Lambda functions folder
+    │   │   ├── boardMgmtLambdas.ts      # Board and message APIs
+    │   │   ├── subscriptionLambdas.ts   # Topic subscription APIs
+    │   ├── schemas                      # Schemas folder
+    │   │   ├── Interfaces.ts            # Interface definition file
+    │   └── utils                        # Utility folder
+    │       └── errorHandler.ts          # Helper function file for error handling
+    └── ...
 
 ## Usage
 
@@ -49,38 +64,6 @@ functions:
 ```
 
 _Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [`httpApi` event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/). Additionally, in current configuration, the DynamoDB table will be removed when running `serverless remove`. To retain the DynamoDB table even after removal of the stack, add `DeletionPolicy: Retain` to its resource definition.
-
-### Invocation
-
-After successful deployment, you can create a new user by calling the corresponding endpoint:
-
-```bash
-curl --request POST 'https://xxxxxx.execute-api.us-east-1.amazonaws.com/users' --header 'Content-Type: application/json' --data-raw '{"name": "John", "userId": "someUserId"}'
-```
-
-Which should result in the following response:
-
-```bash
-{"userId":"someUserId","name":"John"}
-```
-
-You can later retrieve the user by `userId` by calling the following endpoint:
-
-```bash
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/users/someUserId
-```
-
-Which should result in the following response:
-
-```bash
-{"userId":"someUserId","name":"John"}
-```
-
-If you try to retrieve user that does not exist, you should receive the following response:
-
-```bash
-{"error":"Could not find user with provided \"userId\""}
-```
 
 ### Local development
 
@@ -122,8 +105,8 @@ with the following:
 ```javascript
 const dynamoDbClientParams = {};
 if (process.env.IS_OFFLINE) {
-  dynamoDbClientParams.region = 'localhost'
-  dynamoDbClientParams.endpoint = 'http://localhost:8000'
+  dynamoDbClientParams.region = "localhost";
+  dynamoDbClientParams.endpoint = "http://localhost:8000";
 }
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient(dynamoDbClientParams);
 ```
@@ -135,5 +118,6 @@ serverless offline start
 ```
 
 To learn more about the capabilities of `serverless-offline` and `serverless-dynamodb-local`, please refer to their corresponding GitHub repositories:
+
 - https://github.com/dherault/serverless-offline
 - https://github.com/99x/serverless-dynamodb-local
