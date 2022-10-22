@@ -1,0 +1,87 @@
+org: johnnyxulearning
+app: test-app-api
+service: test-app-api
+frameworkVersion: "3"
+
+custom:
+  tableName: "users-table-${sls:stage}"
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - Fn::GetAtt: [UsersTable, Arn]
+        - Effect: Allow
+          Action:
+            - SNS:GetTopicAttributes
+            - SNS:SetTopicAttributes
+            - SNS:AddPermission
+            - SNS:RemovePermission
+            - SNS:DeleteTopic
+            - SNS:Subscribe
+            - SNS:ListSubscriptionsByTopic
+            - SNS:PublisH
+          Resource: arn:aws:sns:*:466883570052:user-registration-event
+  environment:
+    USERS_TABLE: ${self:custom.tableName}
+
+functions:
+  queryUser:
+    handler: src/lambdas/userMgmtFunc.queryUserHandler
+    events:
+      - httpApi:
+          path: /test-app/users
+          method: get
+  registerUser:
+    handler: src/lambdas/userMgmtFunc.registerUserHandler
+    events:
+      - httpApi:
+          path: /test-app/users
+          method: post
+  createUserInDynamoDb:
+    handler: src/lambdas/userMgmtFunc.createUserInDynamoDbHandler
+    dependsOn: SNSUserRegistrationEvent # Only creates the lambda when the topic is available
+    events:
+      - sns:
+          arn: !Ref SNSUserRegistrationEvent
+          topicName: user-registration-event
+
+resources:
+  Resources:
+    # DynamoDB Table
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableName}
+    # SNS Toptic
+    SNSUserRegistrationEvent:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: User Registration Event
+        TopicName: user-registration-event
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-dynamodb-local
+  - serverless-offline-sns
+  - serverless-offline
+  - serverless-plugin-common-excludes
+  - serverless-plugin-include-dependencies

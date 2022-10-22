@@ -1,0 +1,127 @@
+org: johnnyxulearning
+app: test-app-board-api
+service: test-app-board-api
+frameworkVersion: "3"
+
+custom:
+  tableName: "boards-table-${sls:stage}"
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - Fn::GetAtt: [BoardTable, Arn]
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:CreateTable
+          Resource: arn:aws:dynamodb:*:466883570052:*
+        - Effect: Allow
+          Action:
+            - SNS:GetTopicAttributes
+            - SNS:SetTopicAttributes
+            - SNS:AddPermission
+            - SNS:RemovePermission
+            - SNS:DeleteTopic
+            - SNS:Subscribe
+            - SNS:ListSubscriptionsByTopic
+            - SNS:PublisH
+          Resource: arn:aws:sns:*:466883570052:post-message-event
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+            - sqs:GetQueueUrl
+            - sqs:ListQueues
+          Resource: arn:aws:sqs:*:466883570052:CreateBoardQueue
+  environment:
+    USERS_TABLE: ${self:custom.tableName}
+    SQS_QUEUE_URL: { Ref: SQSCreateBoardQueue }
+
+functions:
+  listAllBoards:
+    handler: src/lambdas/boardMgmtLambdas.listAllBoardsHandler
+    events:
+      - httpApi:
+          path: /test-app/boards
+          method: get
+  createBoard:
+    handler: src/lambdas/boardMgmtLambdas.createBoardHandler
+    events:
+      - httpApi:
+          path: /test-app/boards
+          method: post
+  saveBoardInDynamoDb:
+    handler: src/lambdas/boardMgmtLambdas.saveBoardInDynamoDbHandler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - SQSCreateBoardQueue
+              - Arn
+  postMessage:
+    handler: src/lambdas/boardMgmtLambdas.postMessageHandler
+    events:
+      - httpApi:
+          path: /test-app/messages
+          method: post
+  saveMessageInDynamoDb:
+    handler: src/lambdas/boardMgmtLambdas.saveMessageInDynamoDbHandler
+    events:
+      - sns:
+          arn: !Ref SNSPostMessageEvent
+          topicName: post-message-event
+  subscribeToptic:
+    handler: src/lambdas/subscriptionLambdas.subscribeTopticHandler
+    events:
+      - httpApi:
+          path: /test-app/subscriptions
+          method: post
+resources:
+  Resources:
+    # DynamoDB Table
+    BoardTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: boardName
+            AttributeType: S
+        KeySchema:
+          - AttributeName: boardName
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableName}
+    # SQS Queue
+    SQSCreateBoardQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: CreateBoardQueue
+    # SNS Toptic
+    SNSPostMessageEvent:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: Post Message Event
+        TopicName: post-message-event
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-dynamodb-local
+  - serverless-offline-sns
+  - serverless-offline
+  - serverless-plugin-common-excludes
+  - serverless-plugin-include-dependencies

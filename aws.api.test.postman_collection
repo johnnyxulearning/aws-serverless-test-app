@@ -1,0 +1,190 @@
+{
+	"info": {
+		"_postman_id": "07213533-ef5f-4690-884b-8030de1899ac",
+		"name": "aws",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19027843"
+	},
+	"item": [
+		{
+			"name": "Create a board",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"brilliant-board-dev\",\r\n    \"category\": \"technology\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://gexkd21l2a.execute-api.us-east-1.amazonaws.com/test-app/boards",
+					"protocol": "https",
+					"host": [
+						"gexkd21l2a",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test-app",
+						"boards"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post a message",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"default\": \"A brilliant default message\",\r\n    \"content\": \"A brilliant message\",\r\n    \"board\": \"brilliant-board-dev\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://gexkd21l2a.execute-api.us-east-1.amazonaws.com/test-app/messages",
+					"protocol": "https",
+					"host": [
+						"gexkd21l2a",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test-app",
+						"messages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query all the boards",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://gexkd21l2a.execute-api.us-east-1.amazonaws.com/test-app/boards",
+					"protocol": "https",
+					"host": [
+						"gexkd21l2a",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test-app",
+						"boards"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register a user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"default\": \"black.panther.default@gmail.com\",\r\n    \"email\": \"black.panther@gmail.com\",\r\n    \"name\": \"black panther\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://o0ljrcak42.execute-api.us-east-1.amazonaws.com/test-app/users",
+					"protocol": "https",
+					"host": [
+						"o0ljrcak42",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test-app",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query a user",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://o0ljrcak42.execute-api.us-east-1.amazonaws.com/test-app/users?email=black.panther@gmail.com",
+					"protocol": "https",
+					"host": [
+						"o0ljrcak42",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test-app",
+						"users"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "black.panther@gmail.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Subscribe a topic",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"protocol\": \"email\",\r\n    \"topicArn\": \"arn:aws:sns:us-east-1:466883570052:post-message-event\",\r\n    \"email\": \"johnnyxulearning@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://gexkd21l2a.execute-api.us-east-1.amazonaws.com/test-app/subscriptions",
+					"protocol": "https",
+					"host": [
+						"gexkd21l2a",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"test-app",
+						"subscriptions"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
