@@ -33,7 +33,7 @@ Decision made: HTTP API
 
 ### App architecture diagram
 
-![alt text](https://github.com/johnnyxulearning/aws-serverless-app/blob/main/service%20architecture.png?raw=true)
+![alt text](https://github.com/johnnyxulearning/aws-serverless-test-app/blob/main/service%20architecture.png?raw=true)
 
 ### Unit test
 
