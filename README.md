@@ -31,7 +31,7 @@ Decision made: HTTP API
     ├── service architecture.png             # Serverless app architecture
     └── README.md
 
-### App architecture diagram
+### Service architecture diagram
 
 ![alt text](https://github.com/johnnyxulearning/aws-serverless-test-app/blob/main/service%20architecture.png?raw=true)
 
