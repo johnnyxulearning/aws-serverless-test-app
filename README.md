@@ -14,14 +14,19 @@ authorName: 'Johnny Xu'
 
 #### Design considerations - REST API vs HTTP API
 
-1. Scalability
-   REST APIs (for example Expressjs) usually have larger codebase due to closely coupled endpoints than HTTP APIs. So HTTP API is more flexible and scalable.
-2. Cost effectiveness
-   REST APIs (for example Expressjs) usually require more compute and memory which would result in higher costs than HTTP APIs. HTTP APIs are up to 71% cheaper compared to REST APIs according to Amazon.
-3. Performance
-   REST APIs (for example Expressjs) usually proxy all requests to lambda which could intrduce higher latency comparing to HTTP APIs which leverage API Gateway's native routing functionality.
+##### 1. Scalability
 
-Decision made: HTTP API
+REST APIs (for example Expressjs) usually have larger codebase due to closely coupled endpoints than HTTP APIs. So HTTP API is more flexible and scalable.
+
+##### 2. Cost effectiveness
+
+REST APIs (for example Expressjs) usually require more compute and memory which would result in higher costs than HTTP APIs. HTTP APIs are up to 71% cheaper compared to REST APIs according to Amazon.
+
+##### 3. Performance
+
+REST APIs (for example Expressjs) usually proxy all requests to lambda which could intrduce higher latency comparing to HTTP APIs which leverage API Gateway's native routing functionality.
+
+##### Decision made: HTTP API
 
 ### Top-level directory layout
 
