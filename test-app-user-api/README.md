@@ -22,8 +22,8 @@ This is the user management HTTP APIs that includes below functions:
 
     .
     ├── ...
-    ├── src                              # main source code folder
-    │   ├── customErrors                 # stores custome error class
+    ├── src                              # Main source code folder
+    │   ├── customErrors                 # Stores custome error class
     │   │   ├── apiError.ts              # API error class file
     │   ├── lambdas                      # Lambda functions folder
     │   │   ├── userMgmtFunc.ts          # User management APIs
